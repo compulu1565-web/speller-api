@@ -5,7 +5,7 @@ import rateLimit from 'express-rate-limit'
 import { assert, type Infer } from 'superstruct'
 import { RequestBodyStruct, ResponseStruct } from './struct'
 
-const spellerUrl = 'https://nara-speller.co.kr/speller/results'
+const spellerUrl = 'https://nara-speller.co.kr/old_speller/results'
 
 const app = express()
 
@@ -55,12 +55,15 @@ app.post('/', limiter, async (req, res) => {
 
   try {
     const spellerRes = await fetch(spellerUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `text1=${encodeURIComponent(text)}`,
-    })
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36',
+    Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  },
+  body: `text1=${encodeURIComponent(text)}`,
+})
     const result = await spellerRes.text()
 
     const dataString = result.match(/data = \[.*;/g)?.[0] ?? ''
